@@ -10,7 +10,7 @@ To load your own javascript file, add following code to axure "publish settings 
 ```
 
 
-## axlib.db
+## database
 Use online json storage services as database, code example:
 
 ```javascript
