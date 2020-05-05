@@ -18,9 +18,9 @@ Use online json storage services as database
 ### initial
 
 ```javascript
-// initialize your jsonbox id, such as 'box_e2960badfa264088xe6x'
-db = new axlib.db();
-db.init('your_jsonbox_id');
+// initialize your jsonbox id, such as 'box_e8540badfa264088xe6x'
+// one record will be inserted when inited
+db = new axlib.db('your_jsonbox_id');
 ```
 
 ### save
