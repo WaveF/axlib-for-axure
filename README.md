@@ -1,16 +1,16 @@
-# axlib
+# AXLIB
 a handy javascript library for axure
 
 
-## loader
+## Loader
 To load your own javascript file, add following code to axure "publish settings -> fonts -> @font-face" area:
 
-```javascript
+```html
 }</style><script data-main="your_js_file" src="axlib.js" debug></script><style>*{
 ```
 
 
-## database
+## Database
 Use online json storage services as database
 
 > axlib use [jsonbox.io](https://jsonbox.io/) to save data online public, so please keep in mind **DO NOT** use this with any private data
