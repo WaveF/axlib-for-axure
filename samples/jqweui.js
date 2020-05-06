@@ -15,7 +15,7 @@
             // $('head').append(`<style></style>`);
             axlib.addCssRules(`.weui-picker-modal{background:#f7f7f8;}`);
 
-            $axure('@picker').$().find('input').picker({
+            $axure('@picker1').$().find('input').val('').attr('placeholder', '请选择您的称呼').picker({
                 title: "请选择您的称呼",
                 cols: [{
                         textAlign: 'center',
@@ -33,6 +33,36 @@
                 ]
             });
 
+            $axure('@picker2').$().find('input').val('').attr('placeholder', '请选择居住地址').cityPicker({
+                title: "请选择居住地址"
+            });
+
+            $axure('@picker3').$().find('input').val('').attr('placeholder', '请选择您的手机').picker({
+                title: "请选择您的手机",
+                cols: [{
+                    textAlign: 'center',
+                    values: ['iPhone 4', 'iPhone 4S', 'iPhone 5', 'iPhone 5S', 'iPhone 6', 'iPhone 6 Plus', 'iPad 2', 'iPad Retina', 'iPad Air', 'iPad mini', 'iPad mini 2', 'iPad mini 3']
+                }]
+            });
+
+            $axure('@btnNotice').$().click(() => {
+                $.notification({
+                    title: "Baby",
+                    text: "I miss you",
+                    media: "<img src='https://minicg.com/wavef.png'>",
+                    data: "123",
+                    onClick: function (data) {
+                        $.alert("Click" + data);
+                    },
+                    onClose: function (data) {
+                        $.toast("自动关闭", "cancel");
+                    }
+                });
+            });
+
+            $axure('@btnTooltip').$().click(() => {
+                $.toptip('顶部提示', 'success');
+            });
         });
     }
 
