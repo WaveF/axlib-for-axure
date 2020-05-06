@@ -8,6 +8,9 @@
  **/
 (function () {
 
+    var axhost = '';
+    var resCount = 0;
+
     var check_axure_loaded = setInterval(function () {
         if (window.$ && window.$axure) {
             clearInterval(check_axure_loaded);
@@ -17,31 +20,29 @@
 
     function main() {
         loader();
-
         window.axlib = window.AXLIB = (function ($, $axure) {
             return {
+                host   : axhost,
                 db     : database,
+                loadRes: loadRes,
                 loadJS : loadJS,
                 loadCSS: loadCSS,
-                random : random,
-                lorem  : lorem
+                random : random
             };
         })($, $axure);
     }
 
     function loader() {
-        var host = '',
-            timestamp = '',
-            entry, debug;
+        var entry, debug, timestamp = '';
 
         $('script').each(function (i, k) {
             var src = $(k).attr('src') || '';
             src = src.toLowerCase();
 
             if (src.indexOf('axlib.js') != -1) {
-                host = src.split('axlib.js')[0];
-                entry = $(k).attr('data-main');
-                debug = $(k).is("[debug]");
+                axhost = src.split('axlib.js')[0];
+                entry  = $(k).attr('data-main');
+                debug  = $(k).is("[debug]");
             }
         });
 
@@ -58,7 +59,7 @@
         }
 
         console.log({
-            host: host,
+            host:  axhost,
             entry: entry,
             debug: debug,
             timestamp: timestamp
@@ -67,22 +68,60 @@
         loadJS(entry + timestamp);
     }
 
-    function loadJS(url, cb) {
-        var s = document.createElement('script');
-        s.setAttribute('type', 'text/javascript');
-        s.setAttribute('src', url);
-        document.querySelector('head').appendChild(s);
-        s.onload = cb;
+    function loadRes(urls, callback) {
+        var count = 0;
+
+        var recursiveCallback = function() {
+            console.log('[loadRes] ' + urls[count] + ' loaded.');
+            if (++count < urls.length) {
+                var file = urls[count];
+                if (file.indexOf('.js') != -1) {
+                    loadJS(file, recursiveCallback);
+                }
+    
+                if (file.indexOf('.css') != -1) {
+                    loadCSS(file, recursiveCallback);
+                }
+            } else {
+                callback();
+            }
+        }
+
+        if (urls[0].indexOf('.js') != -1) {
+            loadJS(urls[0], recursiveCallback);
+        }
+
+        if (urls[0].indexOf('.css') != -1) {
+            loadCSS(urls[0], recursiveCallback);
+        }
+    }
+
+    function loadJS(url, callback) {
+        var js = createJsElement(url);
+        document.querySelector('head').appendChild(js);
+        js.onload = callback;
     };
 
-    function loadCSS(url, cb) {
-        var s = document.createElement('link');
-        s.setAttribute('type', 'text/css');
-        s.setAttribute('rel', 'Stylesheet');
-        s.setAttribute('href', url);
-        document.querySelector('head').appendChild(s);
-        s.onload = cb;
+    function loadCSS(url, callback) {
+        var css = createCssElement(url);
+        document.querySelector('head').appendChild(css);
+        css.onload = callback;
     };
+
+    function createJsElement(url) {
+        var s = document.createElement('script');
+            s.setAttribute('type', 'text/javascript');
+            s.setAttribute('src', url);
+        return s;
+    }
+
+    function createCssElement(url) {
+        var s = document.createElement('link');
+            s.setAttribute('type', 'text/css');
+            s.setAttribute('rel', 'Stylesheet');
+            s.setAttribute('href', url);
+        return s;
+    }
 
     function database(id, host) {
         host = host || 'https://jsonbox.io/';
@@ -145,8 +184,6 @@
         }
     }
 
-    // TODO: generate captcha
-    // TODO: try https://github.com/layerssss/Faker-zh-cn.js
     function random(type) {
         type = type.toLowerCase();
 
@@ -175,36 +212,9 @@
             return lorem(length, {usePunc: usePunc});
         }
 
-        if (type == 'name') {
-            var familyNames = [
-                "赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈",
-                "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",
-                "何", "吕", "施", "张", "孔", "曹", "严", "华", "金", "魏",
-                "陶", "姜", "戚", "谢", "邹", "喻", "柏", "水", "窦", "章",
-                "云", "苏", "潘", "葛", "奚", "范", "彭", "郎", "鲁", "韦",
-                "昌", "马", "苗", "凤", "花", "方", "俞", "任", "袁", "柳",
-                "酆", "鲍", "史", "唐", "费", "廉", "岑", "薛", "雷", "贺",
-                "倪", "汤", "滕", "殷", "罗", "毕", "郝", "邬", "安", "常",
-                "乐", "于", "时", "傅", "皮", "卞", "齐", "康", "伍", "余",
-                "元", "卜", "顾", "孟", "平", "黄", "和", "穆", "萧", "尹"
-            ];
-            var givenNames = [
-                "子璇", "淼", "国栋", "夫子", "瑞堂", "甜", "敏", "尚", "国贤", "贺祥", "晨涛",
-                "昊轩", "易轩", "益辰", "益帆", "益冉", "瑾春", "瑾昆", "春齐", "杨", "文昊",
-                "东东", "雄霖", "浩晨", "熙涵", "溶溶", "冰枫", "欣欣", "宜豪", "欣慧", "建政",
-                "美欣", "淑慧", "文轩", "文杰", "欣源", "忠林", "榕润", "欣汝", "慧嘉", "新建",
-                "建林", "亦菲", "林", "冰洁", "佳欣", "涵涵", "禹辰", "淳美", "泽惠", "伟洋",
-                "涵越", "润丽", "翔", "淑华", "晶莹", "凌晶", "苒溪", "雨涵", "嘉怡", "佳毅",
-                "子辰", "佳琪", "紫轩", "瑞辰", "昕蕊", "萌", "明远", "欣宜", "泽远", "欣怡",
-                "佳怡", "佳惠", "晨茜", "晨璐", "运昊", "汝鑫", "淑君", "晶滢", "润莎", "榕汕",
-                "佳钰", "佳玉", "晓庆", "一鸣", "语晨", "添池", "添昊", "雨泽", "雅晗", "雅涵",
-                "清妍", "诗悦", "嘉乐", "晨涵", "天赫", "玥傲", "佳昊", "天昊", "萌萌", "若萌"
-            ];
-            return familyNames[parseInt(Math.random() * familyNames.length) - 1] + givenNames[parseInt(Math.random() * givenNames.length) - 1];
-        }
-
         if (type == 'captcha') {
-            
+            var length = arguments[1];
+            return Math.random().toString(36).slice(2, length+2).toUpperCase();
         }
     }
 
