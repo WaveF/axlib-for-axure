@@ -1,6 +1,6 @@
 /**
  * 
- * AxLib v1.2.0
+ * AxLib v1.2.1
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -21,12 +21,13 @@
         loader();
         window.axlib = window.AXLIB = (function ($, $axure) {
             return {
-                host   : axhost,
-                db     : database,
-                loadRes: loadRes,
-                loadJS : loadJS,
-                loadCSS: loadCSS,
-                random : random
+                host       : axhost,
+                db         : database,
+                loadRes    : loadRes,
+                loadJS     : loadJS,
+                loadCSS    : loadCSS,
+                addCssRules: addCssRules,
+                random     : random
             };
         })($, $axure);
     }
@@ -57,7 +58,7 @@
             entry = host + entry;
         }
 
-        console.log({
+        trace({
             host:  axhost,
             entry: entry,
             debug: debug,
@@ -71,7 +72,6 @@
         var count = 0;
 
         var recursiveCallback = function() {
-            console.log('[loadRes] ' + urls[count] + ' loaded.');
             if (++count < urls.length) {
                 var file = urls[count];
                 if (file.indexOf('.js') != -1) {
@@ -82,6 +82,9 @@
                     loadCSS(file, recursiveCallback);
                 }
             } else {
+                console.groupCollapsed('%c[axlib.loadRes]', 'color:#06f; font-weight:bold;');
+                console.table(urls);
+                console.groupEnd();
                 callback();
             }
         }
@@ -215,6 +218,21 @@
             var length = arguments[1];
             return Math.random().toString(36).slice(2, length+2).toUpperCase();
         }
+    }
+
+    function addCssRules(rules) {
+        var style = $(`<style>${rules}</style>`);
+        $('html > head').append(style);
+    }
+
+    function trace(args) {
+        console.group('%c[axlib]', 'color:#06f; font-weight:bold;');
+        if (!arguments[1]) {
+            console.log(arguments[0]);
+        } else {
+            console.log(arguments[0], arguments[1]);
+        }
+        console.groupEnd()
     }
 
 }());
