@@ -1,6 +1,6 @@
 /**
  * 
- * AxLib v1.2.1
+ * AxLib v1.3.0
  * 
  * Author: WaveF
  * QQ: 298010937
