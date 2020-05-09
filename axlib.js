@@ -10,26 +10,25 @@
 
     var axhost = '';
 
-    var check_axure_loaded = setInterval(function () {
-        if (window.$ && window.$axure) {
-            clearInterval(check_axure_loaded);
-            main();
-        }
-    }, 100);
+    main();
 
     function main() {
+        window.waitFor = waitFor;
+        waitFor(['$', '$axure'], axureInited);
+    }
+
+    function axureInited() {
         loader();
-        window.axlib = window.AXLIB = (function ($, $axure) {
-            return {
-                host       : axhost,
-                db         : database,
-                loadRes    : loadRes,
-                loadJS     : loadJS,
-                loadCSS    : loadCSS,
-                addCssRules: addCssRules,
-                random     : random
-            };
-        })($, $axure);
+        window.axlib = window.AXLIB = {
+            getHost    : getHost,
+            db         : database,
+            loadRes    : loadRes,
+            loadJS     : loadJS,
+            loadCSS    : loadCSS,
+            addCssRules: addCssRules,
+            random     : random,
+            waitFor    : waitFor
+        };
     }
 
     function loader() {
@@ -223,6 +222,29 @@
     function addCssRules(rules) {
         var style = $(`<style>${rules}</style>`);
         $('html > head').append(style);
+    }
+
+    function waitFor(objs, callback) {
+        objs = (typeof objs == 'string')?[objs]:objs;
+        
+        var check_prepared = setInterval(()=>{
+            var exists = true;
+            for (var i=0; i<objs.length; i++) {
+                var obj = objs[i];
+                
+                if (window[obj] == undefined) {
+                    exists = false;
+                }
+            }
+            if (exists) {
+                clearInterval(check_prepared);
+                callback();
+            }
+        }, 100);
+    }
+
+    function getHost() {
+        return axhost;
     }
 
     function trace(args) {

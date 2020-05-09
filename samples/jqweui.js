@@ -12,10 +12,9 @@
             'https://cdn.bootcss.com/jquery-weui/1.2.1/js/city-picker.min.js'
         ], () => {
 
-            // $('head').append(`<style></style>`);
             axlib.addCssRules(`.weui-picker-modal{background:#f7f7f8;}`);
 
-            $axure('@picker1').$().find('input').val('').attr('placeholder', '请选择您的称呼').picker({
+            /*$axure('@picker1').$().find('input').val('').attr('placeholder', '请选择您的称呼').picker({
                 title: "请选择您的称呼",
                 cols: [{
                         textAlign: 'center',
@@ -62,8 +61,70 @@
 
             $axure('@btnTooltip').$().click(() => {
                 $.toptip('顶部提示', 'success');
-            });
+            });*/
+
+            window.JQWEUI = window.jqweui = {
+                picker: picker
+            };
         });
+    }
+
+    /**
+     * Turn axure element into JqWeUI Picker
+     * 
+     * @param {String} name - axure element which manual named
+     * @param {Object} options
+     * @param {String} options.type - 'single', 'multiple', 'city', 'data', 'datetime', default is 'single'
+     * @param {String} options.title - title for popup picker
+     * @param {Array}  options.items - an array contains picker items
+     * @param {String} options.placeholder - placeholder for input element
+     */
+    function picker(name, options) {
+        var target = $axure(`@${name}`).$().find('input');
+        var {type, title, items, placeholder} = options;
+
+        type = type.toLowerCase() || 'single';
+        title = title || '请选择';
+        placeholder = placeholder || title || '';
+
+        if (placeholder) {
+            target.val('').attr('placeholder', placeholder);
+        }
+
+        if (type == 'single') {
+            target.picker({
+                title: title,
+                cols: [{ textAlign: 'center', values: items }]
+            });
+        }
+
+        if (type == 'multiple') {
+            var multiItems = [];
+            for (let i in items) {
+                multiItems.push({
+                    textAlign: 'center',
+                    values: items[i]
+                });
+            }
+            target.picker({
+                title: title,
+                cols: multiItems
+            });
+        }
+
+        if (type == 'city') {
+            target.cityPicker({
+                title: title
+            });
+        }
+
+        if (type == 'date') {
+            target.calendar();
+        }
+
+        if (type == 'datetime') {
+            target.datetimePicker();
+        }
     }
 
 }());
