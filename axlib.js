@@ -54,7 +54,7 @@
         }
 
         if (entry.indexOf('http') == -1 || entry.indexOf('//') == -1) {
-            entry = host + entry;
+            entry = axhost + entry;
         }
 
         trace({
