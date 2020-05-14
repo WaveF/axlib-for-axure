@@ -66,7 +66,7 @@
         });
 
         loadJS(mainJS + timestamp);
-        if (typeof mainFN == 'function') { mainFN(); }
+        if (typeof window['mainFN']) { mainFN(); }
     }
 
     function loadRes(urls, callback) {
