@@ -1,6 +1,6 @@
 /**
  * 
- * AxLib v1.3.0
+ * AxLib v1.3.1
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -32,7 +32,7 @@
     }
 
     function loader() {
-        var entry, debug, timestamp = '';
+        var mainJS, mainFN, debug, timestamp = '';
 
         $('script').each(function (i, k) {
             var src = $(k).attr('src') || '';
@@ -40,31 +40,33 @@
 
             if (src.indexOf('axlib.js') != -1) {
                 axhost = src.split('axlib.js')[0];
-                entry  = $(k).attr('data-main');
+                mainJS = $(k).attr('data-main');
+                mainFN = $(k).attr('data-entry');
                 debug  = $(k).is("[debug]");
             }
         });
 
-        if (!entry) return;
-        if (entry.indexOf('.js') == -1) {
-            entry += '.js';
+        if (!mainJS) return;
+        if (mainJS.indexOf('.js') == -1) {
+            mainJS += '.js';
         }
         if (debug) {
             timestamp = '?' + new Date().getTime();
         }
 
-        if (entry.indexOf('http') == -1 || entry.indexOf('//') == -1) {
-            entry = axhost + entry;
+        if (mainJS.indexOf('http') == -1 || mainJS.indexOf('//') == -1) {
+            mainJS = axhost + mainJS;
         }
 
         trace({
             host:  axhost,
-            entry: entry,
+            mainJS: mainJS,
             debug: debug,
             timestamp: timestamp
         });
 
-        loadJS(entry + timestamp);
+        loadJS(mainJS + timestamp);
+        if (typeof mainFN == 'function') { mainFN(); }
     }
 
     function loadRes(urls, callback) {
