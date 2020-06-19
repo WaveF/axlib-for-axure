@@ -1,6 +1,6 @@
 /**
  * 
- * AxMock v0.1.0
+ * AxMock v0.1.2
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -11,7 +11,11 @@
     window.check_axure_loaded = setInterval(function () {
         if (window.$axure && window.$) {
             if (!window.Mock) {
-                loadJS('https://cdn.bootcdn.net/ajax/libs/Mock.js/1.0.0/mock-min.js', main);
+                loadJS('https://cdn.bootcdn.net/ajax/libs/Mock.js/1.0.0/mock-min.js', ()=>{
+                    loadJS('https://cdn.bootcdn.net/ajax/libs/typed.js/2.0.11/typed.min.js', ()=>{
+                        setTimeout(main, 300);
+                    });
+                });
             }
             clearInterval(check_axure_loaded);
         }
@@ -26,10 +30,10 @@
             
             mockText( $(k), '((数字))', Mock.mock({ "num|1-999": 1 }).num );
             mockText( $(k), '((数字#1))', Mock.mock({ "num|1-9": 1 }).num );
-            mockText( $(k), '((数字#2))', Mock.mock({ "num|10-99": 1 }).num );
-            mockText( $(k), '((数字#3))', Mock.mock({ "num|100-999": 1 }).num );
-            mockText( $(k), '((数字#4))', Mock.mock({ "num|1000-9999": 1 }).num );
-            mockText( $(k), '((数字#5))', Mock.mock({ "num|10000-99999": 1 }).num );
+            mockText( $(k), '((数字#2))', Mock.mock({ "num|10-99": 10 }).num );
+            mockText( $(k), '((数字#3))', Mock.mock({ "num|100-999": 100 }).num );
+            mockText( $(k), '((数字#4))', Mock.mock({ "num|1000-9999": 1000 }).num );
+            mockText( $(k), '((数字#5))', Mock.mock({ "num|10000-99999": 10000 }).num );
             mockText( $(k), '((数字#中))', Mock.mock('@cword("零一二三四五六七八九十")') );
             
             mockText( $(k), '((字母))', Mock.mock('@string("upper", 1, 10)') );
@@ -59,18 +63,44 @@
             mockColor( $(k), Mock.mock('@color()') );
             
             mockText( $(k), '((标题))', Mock.mock('@ctitle()') );
-            mockText( $(k), '((单句))', Mock.mock('@csentence()') );
+            mockText( $(k), '((单句))', (Mock.mock('@csentence()')).split('。').join('') );
             mockText( $(k), '((段落))', Mock.mock('@cparagraph()') );
         });
     }
 
-    function mockText(target, marker, newText) {
+    function mockText(target, marker, mocked) {
+        if ($(target).hasClass('mock-text')) return;
+
         var currentText = $(target).text();
         // console.log(getLength(marker));
         
         if (currentText.indexOf(marker) > -1) {
-            $(target).text(currentText.split(marker).join(newText));
+            let textRoot = $(target).parents('.text').parent();
+            let textId = textRoot.attr('id');
+            var newText = currentText.split(marker).join(mocked);
+            // $(target).text(newText);
+
+
+            $(target).attr('id', `mock-text-${textId}`).addClass('mock-text');
+            
+            console.log($(target));
+            let typed = new Typed(`#mock-text-${textId}`, {
+                strings: [currentText, newText],
+                typeSpeed: 30
+            });
+
+            $('.typed-cursor').hide();
         }
+    }
+
+    function mockColor(target, color) {
+        var marker = '((颜色))';
+        var currentText = $(target).text();
+        if (currentText.indexOf(marker)==-1) return;
+
+        var root = $(target).parents('.text').parent();
+        root.css('background', color).find('img').hide();
+        $(target).text(currentText.split(marker).join(color));
     }
 
     function getLength(str) {
@@ -83,16 +113,6 @@
             }
         }
         return null;
-    }
-
-    function mockColor(target, color) {
-        var marker = '((颜色))';
-        var currentText = $(target).text();
-        if (currentText.indexOf(marker)==-1) return;
-
-        var root = $(target).parents('.text').parent();
-        root.css('background', color).find('img').hide();
-        $(target).text(currentText.split(marker).join(color));
     }
 
     function loadJS(url, cb) {
