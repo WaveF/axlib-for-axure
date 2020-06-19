@@ -1,6 +1,6 @@
 /**
  * 
- * AxMock v0.1.4
+ * AxMock v0.1.5
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -11,8 +11,8 @@
     window.check_axure_loaded = setInterval(function () {
         if (window.$axure && window.$) {
             if (!window.Mock) {
-                loadJS('https://cdn.bootcdn.net/ajax/libs/Mock.js/1.0.0/mock-min.js', ()=>{
-                    loadJS('https://cdn.bootcdn.net/ajax/libs/typed.js/2.0.11/typed.min.js', ()=>{
+                loadJS('https://cdn.jsdelivr.net/npm/mockjs@1.0.0/dist/mock.min.js', ()=>{
+                    loadJS('https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js', ()=>{
                         setTimeout(main, 300);
                     });
                 });
