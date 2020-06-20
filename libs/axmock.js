@@ -1,6 +1,6 @@
 /**
  * 
- * AxMock v0.1.5
+ * AxMock v0.1.6
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -22,7 +22,7 @@
     }, 100);
 
     function main() {
-        console.clear();
+        // console.clear();
         
         let css = [
             '.typed-cursor { display:none; }'
@@ -80,6 +80,7 @@
                 typeSpeed: 30
             });
             
+            $('.typed-cursor').text('');
         });
 
     }
