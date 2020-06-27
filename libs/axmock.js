@@ -1,6 +1,6 @@
 /**
  * 
- * AxMock v0.1.6
+ * AxMock v0.1.7
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -72,6 +72,15 @@
             updateText = mockText( updateText, '((标题))', Mock.mock('@ctitle()') );
             updateText = mockText( updateText, '((单句))', (Mock.mock('@csentence()')).split('。').join('') );
             updateText = mockText( updateText, '((段落))', Mock.mock('@cparagraph()') );
+            updateText = mockText( updateText, '((单字#1))', Mock.mock('@cword(1)') );
+            updateText = mockText( updateText, '((单字#2))', Mock.mock('@cword(2)') );
+            updateText = mockText( updateText, '((单字#3))', Mock.mock('@cword(3)') );
+            updateText = mockText( updateText, '((单字#4))', Mock.mock('@cword(4)') );
+            updateText = mockText( updateText, '((单字#5))', Mock.mock('@cword(5)') );
+            updateText = mockText( updateText, '((单字#6))', Mock.mock('@cword(6)') );
+            updateText = mockText( updateText, '((单字#7))', Mock.mock('@cword(7)') );
+            updateText = mockText( updateText, '((单字#8))', Mock.mock('@cword(8)') );
+            updateText = mockText( updateText, '((单字#9))', Mock.mock('@cword(9)') );
             updateText = mockColor($(k), updateText);
 
             // $(k).text(currentText);
