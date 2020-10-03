@@ -412,9 +412,9 @@
             });
         };
 
-        function create(callback, secret_key, private) {
-            if (private === undefined) {
-                private = false;
+        function create(callback, secret_key, isPrivate) {
+            if (isPrivate === undefined) {
+                isPrivate = false;
             }
 
             $.ajax({
@@ -425,7 +425,7 @@
                 type: 'POST',
                 beforeSend: function (req) {
                     req.setRequestHeader("secret-key", secret_key);
-                    req.setRequestHeader("private", private);
+                    req.setRequestHeader("private", isPrivate);
                 },
                 contentType: "application/json; charset=utf-8",
                 dataType: 'json',
