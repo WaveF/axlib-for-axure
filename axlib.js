@@ -1,6 +1,6 @@
 /**
  * 
- * AxLib v1.3.2
+ * AxLib v1.3.3
  * 
  * Author: WaveF
  * QQ: 298010937
@@ -14,6 +14,7 @@
 
     function main() {
         window.waitFor = waitFor;
+        window.axlib = window.AXLIB = {};
         waitFor(['$', '$axure'], axureInited);
     }
 
@@ -29,7 +30,100 @@
             random     : random,
             waitFor    : waitFor
         };
+
+        // console.log({
+        //     name: 'axlib',
+        //     version: '1.3.3'
+        // });
     }
+
+    function load(config) {
+        var files = config.urls,
+            sync = config.sync,
+            callback = config.onComplete;
+    
+        var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
+        var s = [];
+        
+        if (!$.isArray(files)) {
+            files = [files];
+        }
+    
+        if (sync === undefined) {
+            sync = true;
+        }
+    
+        if (sync === true) {
+    
+            // 同步蔽塞
+            var last = files.length - 1;
+            var recursiveLoad = function (i) {
+
+                var fileType = getFileExt(files[i]);
+                var syncLoaded = function () {
+                    if (! /*@cc_on!@*/ 0 || this.readyState === 'loaded' || this.readyState === 'complete') {
+                        this.onload = this.onreadystatechange = null;
+                        this.parentNode.removeChild(this);
+                        if (i !== last) {
+                            recursiveLoad(i + 1);
+                        } else if (typeof (callback) === 'function') {
+                            callback();
+                        };
+                    }
+                };
+    
+                if (fileType === 'js') {
+                    s[i] = document.createElement('script');
+                    s[i].setAttribute('type', 'text/javascript');
+                    s[i].onload = s[i].onreadystatechange = syncLoaded;
+                    s[i].setAttribute('src', files[i]);
+                } else if (fileType === 'css') {
+                    s[i] = document.createElement('link');
+                    s[i].setAttribute('type', 'text/css');
+                    s[i].setAttribute('rel', 'text/stylesheet');
+                    s[i].onload = s[i].onreadystatechange = syncLoaded;
+                    s[i].setAttribute('href', files[i]);
+                }
+                
+                HEAD.appendChild(s[i]);
+            };
+            recursiveLoad(0);
+    
+        } else {
+    
+            // 异步加载
+            var loaded = 0;
+            var asyncLoaded = function () {
+                if (! /*@cc_on!@*/ 0 || this.readyState === 'loaded' || this.readyState === 'complete') {
+                    loaded++;
+                    this.onload = this.onreadystatechange = null;
+                    this.parentNode.removeChild(this);
+                    if (loaded === files.length && typeof (callback) === 'function') callback();
+                }
+            };
+    
+            for (var i = 0; i < files.length; i++) {
+                
+                var fileType = getFileExt(files[i]);
+    
+                if (fileType === 'js') {
+                    s[i] = document.createElement('script');
+                    s[i].setAttribute('type', 'text/javascript');
+                    s[i].onload = s[i].onreadystatechange = asyncLoaded;
+                    s[i].setAttribute('src', files[i]);
+                } else if (fileType === 'css') {
+                    s[i] = document.createElement('link');
+                    s[i].setAttribute('type', 'text/css');
+                    s[i].setAttribute('rel', 'text/stylesheet');
+                    s[i].onload = s[i].onreadystatechange = asyncLoaded;
+                    s[i].setAttribute('href', files[i]);
+                }
+    
+                HEAD.appendChild(s[i]);
+            }
+    
+        }
+    };
 
     function loader() {
         var mainJS, mainFN, debug, timestamp = '';
@@ -131,13 +225,7 @@
 
         var url = host + id;
 
-        // init db and auto insert first record
-        load(null, data => {
-            if (data.length > 0) return;
-            save('axure database created');
-        });
-
-        function save(dataString, callback) {
+        var save = function(dataString, callback) {
             $.ajax({
                 url: url,
                 data: JSON.stringify({
@@ -159,7 +247,7 @@
             });
         }
 
-        function load(gval, callback) {
+        var load = function(gval, callback) {
             $.ajax({
                 url: url,
                 success: function (data) {
@@ -179,6 +267,12 @@
                 }
             });
         };
+
+        // init db and auto insert first record
+        load(null, data => {
+            if (data.length > 0) return;
+            save('axure database created');
+        });
 
         return {
             save: save,
@@ -227,22 +321,35 @@
     }
 
     function waitFor(objs, callback) {
-        objs = (typeof objs == 'string')?[objs]:objs;
+        objs = (typeof objs === 'string')?[objs]:objs;
         
-        var check_prepared = setInterval(()=>{
+        var _checkReady_ = setInterval(()=>{
             var exists = true;
             for (var i=0; i<objs.length; i++) {
                 var obj = objs[i];
                 
-                if (window[obj] == undefined) {
+                if (window[obj] === undefined) {
+                    console.log(0000, window[obj]);
                     exists = false;
                 }
             }
             if (exists) {
-                clearInterval(check_prepared);
+                clearInterval(_checkReady_);
                 callback();
             }
         }, 100);
+    }
+
+    function getFileExt(url) {
+        var f = url.split('/').pop();
+
+        if (f.indexOf('?')) {
+            f = f.split('?')[0];
+        }
+
+        var ext = f.split('.');
+        ext = ext[ext.length - 1];
+        return ext;
     }
 
     function getHost() {
