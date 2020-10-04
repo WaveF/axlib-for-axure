@@ -677,7 +677,7 @@
         $('head').append(`<style>.notifyjs-bootstrap-base{font-size:13px;}</style>`);
 
         // axslot icon animation
-        $('head').append(`<style>.ax-slot-icon-blink{animation:blink .05s infinite;animation-direction:alternate;}@keyframes blink{0%{opacity:0;}100%{opacity:100;}}div[data-label="ghost"]{pointer-events:none}</style>`);
+        $('head').append(`<style>.ax-slot-icon-blink{animation:blink .02s infinite;animation-direction:alternate;}@keyframes blink{0%{opacity:0;}100%{opacity:100;}}div[data-label="ghost"]{pointer-events:none}</style>`);
     }
 
 }());
