@@ -10,7 +10,7 @@
 
     function main() {
 
-        // console.clear();
+        console.clear();
 
         if (window.SLOT) return;
         window.SLOT = {
@@ -29,44 +29,28 @@
             'https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.js',
             'https://cdn.jsdelivr.net/npm/sweetalert2@10.3.5/dist/sweetalert2.all.min.js'
         ], inited, false);
-
+        
     }
 
     function inited() {
         customizeCSS();
+        
+        var slots = $('div[class*="ax-slot-bid"]');
 
-        var slots = $('.ax-slot-bid');
         slots.each((i, k) => {
             var dp = $(k).parents('.panel_state').parent();
             var rp = dp.parents('div[data-label="AX-SLOT"]').get(0);
-            var showNotify = $(k).siblings('.ax-slot-notify').find('.text').find('span').html();
-            var showIcon = $(k).siblings('.ax-slot-icon').find('.text').find('span').html();
-            var autoLoad = $(k).siblings('.ax-slot-auto-load').find('.text').find('span').html();
-            var encryptKey = $(k).siblings('.ax-slot-encrypt-key').find('.text').find('span').html();
-            var noEncrypt = $(k).siblings('.ax-slot-no-encrypt').find('.text').find('span').html();
+            var showNotify = $(k).siblings('div[class*="ax-slot-notify"]').find('.text').find('span').html();
+            var showIcon = $(k).siblings('div[class*="ax-slot-icon"]').find('.text').find('span').html();
+            var autoLoad = $(k).siblings('div[class*="ax-slot-auto-load"]').find('.text').find('span').html();
+            var encryptKey = $(k).siblings('div[class*="ax-slot-encrypt-key"]').find('.text').find('span').html();
+            var noEncrypt = $(k).siblings('div[class*="ax-slot-no-encrypt"]').find('.text').find('span').html();
             var bid = $(k).find('.text').find('span').html();
-
-            if (!isValidBinId(bid)) {
-                Swal.fire({
-                    title: 'Invaild bin id',
-                    text: "Do you want to create a new bin?",
-                    // icon: 'question',
-                    showCancelButton: true,
-                    reverseButtons: true,
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        onCreate(rp);
-                    }
-                })
-                return;
-            }
-
+            
             rp.jsonbin = new jsonbin(bid);
             $(rp).css('overflow', 'hidden');
 
-            if (encryptKey == undefined) {
+            if (encryptKey === undefined) {
                 encryptKey = '';
             }
 
@@ -74,9 +58,9 @@
                 bid: bid,
                 encryptKey: encryptKey,
                 showNotify: isEnabled(showNotify),
-                showIcon: isEnabled(showIcon),
-                autoLoad: isEnabled(autoLoad),
-                noEncrypt: isEnabled(noEncrypt)
+                showIcon:   isEnabled(showIcon),
+                autoLoad:   isEnabled(autoLoad),
+                noEncrypt:  isEnabled(noEncrypt)
             };
 
             console.log('Settings:', rp.settings);
@@ -88,11 +72,28 @@
                 onRead(rp);
             }
 
+            
+            if (!hasBinId(bid)) {
+                Swal.fire({
+                    title: 'Bin id is empty',
+                    text: "Do you want to create a new bin?",
+                    // icon: 'question',
+                    showCancelButton: true,
+                    reverseButtons: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        onCreate(rp);
+                    }
+                });
+            }
+
             $(rp).on('CmdChanged', onCmdChanged);
         });
     }
 
-    function isValidBinId(id) {
+    function hasBinId(id) {
         if (!id || id == '' || id == 'Please enter jsonbin record id') {
             notify('Please provide correct jsonbin record id', 'error', true);
             notify('axslot won\'t work for now', 'error', true);
@@ -111,6 +112,8 @@
     }
 
     function onUpdate(rp) {
+        if (!hasBinId(rp.settings.bid)) return;
+
         // 从中继器获取监视元件的名称与值
         var newData = formatRepeaterData(getRepeaterDataById(rp.id));
 
@@ -182,6 +185,8 @@
     }
 
     function onRead(rp) {
+        if (!hasBinId(rp.settings.bid)) return;
+
         rp.jsonbin.read(oldData => {
 
             // 数据已被加密
@@ -243,7 +248,7 @@
             title: 'Create public bin',
             text: 'Paste your secret-key below:',
             input: 'text',
-            footer: 'Sign up or Login to &nbsp;<a href="https://jsonbin.io" target="_blank">jsonbin.io</a>&nbsp; then click &nbsp;<a href="https://jsonbin.io/api-keys" target="_blank">here</a>&nbsp; to get your key',
+            footer: 'Login to&nbsp;<a href="https://jsonbin.io" target="_blank">jsonbin.io</a>&nbsp;then click&nbsp;<a href="https://jsonbin.io/api-keys" target="_blank">here</a>&nbsp;to get secret-key, watch&nbsp;<a href="https://www.youtube.com/watch?v=Hnfe6ZVOGzQ" target="_blank">video tutorial</a>',
             inputAttributes: {
                 autocapitalize: 'off'
             },
@@ -256,7 +261,8 @@
         }).then((result) => {
             console.log(result);
             if (result.isConfirmed) {
-                rp.jsonbin.create(data => {
+                // rp.jsonbin.create(data => {
+                createBin(data => {
 
                     Swal.fire({
                         title: 'Your new bin-id is:',
@@ -272,6 +278,7 @@
     }
 
     function onDelete(rp) {
+        if (!hasBinId(rp.settings.bid)) return;
 
         Swal.fire({
             title: `Delete bin `,
@@ -393,7 +400,7 @@
                 success: callback,
                 error: function (err) {
                     console.log('AxSlot Error: Update', err);
-                    notify('AxSlot Error, more detail in browser\'s console.', 'error', true);
+                    notify('AxSlot: error, more detail in browser\'s console.', 'error', true);
                 }
             });
         }
@@ -407,37 +414,13 @@
                 success: callback,
                 error: function (err) {
                     console.log('AxSlot Error: Read', err);
-                    notify('AxSlot Error, more detail in browser\'s console.', 'error', true);
+                    notify('AxSlot: error, more detail in browser\'s console.', 'error', true);
                 }
             });
-        };
+        }
 
         function create(callback, secret_key, isPrivate) {
-            if (isPrivate === undefined) {
-                isPrivate = false;
-            }
-
-            $.ajax({
-                url: `${host}/b`,
-                data: JSON.stringify({
-                    jsonbin: 'created'
-                }),
-                type: 'POST',
-                beforeSend: function (req) {
-                    req.setRequestHeader("secret-key", secret_key);
-                    req.setRequestHeader("private", isPrivate);
-                },
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                success: data => {
-                    callback(data);
-
-                },
-                error: function (err) {
-                    console.log('AxSlot Error: Create', err);
-                    notify('AxSlot Error, more detail in browser\'s console.', 'error', true);
-                }
-            });
+            createBin(callback, secret_key, isPrivate);
         }
 
         function del(callback, secret_key) {
@@ -453,10 +436,10 @@
                 },
                 error: function (err) {
                     console.log('AxSlot Error: Delete', err);
-                    notify('AxSlot Error, more detail in browser\'s console.', 'error', true);
+                    notify('AxSlot: error, more detail in browser\'s console.', 'error', true);
                 }
             });
-        };
+        }
 
         function info() {
             return {
@@ -473,6 +456,34 @@
             del: del,
             info: info
         };
+    }
+
+    function createBin(callback, secret_key, isPrivate) {
+        if (isPrivate === undefined) {
+            isPrivate = false;
+        }
+
+        $.ajax({
+            url: 'https://api.jsonbin.io/b',
+            data: JSON.stringify({
+                jsonbin: 'created'
+            }),
+            type: 'POST',
+            beforeSend: function (req) {
+                req.setRequestHeader("secret-key", secret_key);
+                req.setRequestHeader("private", isPrivate);
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            success: data => {
+                callback(data);
+
+            },
+            error: function (err) {
+                console.log('AxSlot Error: Create', err);
+                notify('AxSlot: error, more detail in browser\'s console.', 'error', true);
+            }
+        });
     }
 
     function formatRepeaterData(_rpData, _dir) {
@@ -550,7 +561,6 @@
     }
 
     function loadFiles(files, callback, sync) {
-        console.clear();
 
         var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
         var getFileExt = function (url) {
