@@ -246,8 +246,10 @@
 
         Swal.fire({
             title: 'Create public bin',
-            text: 'Paste your secret-key below:',
+            text: 'Your secret-key (the default key is for test only):',
             input: 'text',
+            inputValue: '$2b$10$IrbGh/dS9li/GYKvzPSHfeW5DIYO7RyQLX43IBka0b/b/AKdBKv8W',
+            inputPlaceholder: 'Paste your secret-key here',
             footer: 'Login to&nbsp;<a href="https://jsonbin.io" target="_blank">jsonbin.io</a>&nbsp;then click&nbsp;<a href="https://jsonbin.io/api-keys" target="_blank">here</a>&nbsp;to get secret-key, watch&nbsp;<a href="https://www.youtube.com/watch?v=Hnfe6ZVOGzQ" target="_blank">video tutorial</a>',
             inputAttributes: {
                 autocapitalize: 'off'
