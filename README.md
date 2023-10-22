@@ -244,19 +244,6 @@ Axure的前端组件库,在RP9.x版本通过测试
       axlib.saveTextFile(text, fileName);
       ```
 
-    - ##### 测试表达式
-      ```js
-      let fn = function(){};
-      axlib.testExp({
-        exp: 'swal',    // 检查表达式 window.swal 是否不等于 undefined
-        success: fn,    // 如果表达式为真，则执行此函数
-        fail: fn,       // 如果表达式在超时后仍然为不为真，则执行此函数
-        interval: 200,  // 检测的时间间隔
-        timeout: 5000,  // 超时上限
-        debug: false    // 启用 debug 模式（打印检测过程）
-      });
-      ```
-
     - ##### 隐藏 Axure 默认打印的 dispatchMessage
       ```js
       //axlib.hideMsg(); 有bug，已弃用
