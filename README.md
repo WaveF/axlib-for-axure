@@ -1,6 +1,11 @@
 # Axure扩展库
 Axure的前端组件库,在RP9.x版本通过测试
 
+## 提示
+  建议配合 **JsBox** 使用，**JsBox** 是调用了axlib的一个Axure代码编辑器组件版，除了能方便的在Axure中直接编程之外，还可以外联到VSCode中进行开发建议直接跳转到JsBox仓库进行了解：
+  - https://gitee.com/wavef/jsbox （码云）
+  - https://github.com/wavef/jsbox （Github）
+
 ## 组件
 
 - ## axlib-v3
