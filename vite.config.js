@@ -4,6 +4,7 @@ const { defineConfig } = require('vite')
 const MODULE_NAME = 'axlib'
 module.exports = defineConfig({
   build: {
+    minify: false,
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'lib/main.js'),
