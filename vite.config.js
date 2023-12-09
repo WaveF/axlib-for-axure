@@ -5,7 +5,7 @@ const MODULE_NAME = 'axlib'
 module.exports = defineConfig({
   build: {
     minify: false,
-    sourcemap: true,
+    sourcemap: false,
     lib: {
       entry: path.resolve(__dirname, 'lib/main.js'),
       formats: ['es'],
