@@ -249,7 +249,10 @@ Axure的前端组件库,在RP9.x版本通过测试
       axlib.saveTextFile(text, fileName);
       ```
 
-    - ##### 隐藏 Axure 默认打印的 dispatchMessage
+    - ##### 动态插入ES Module代码
       ```js
-      //axlib.hideMsg(); 有bug，已弃用
+      axlib.insertJsModule(`
+        import { createApp } from 'https://unpkg.com/petite-vue?module';
+        console.log(createApp);
+      `);
       ```
