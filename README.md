@@ -207,6 +207,20 @@ Axure的前端组件库,在RP9.x版本通过测试
       axlib.loading(container, show, options);
       ```
 
+    - ##### 只加载一次资源，避免重复加载
+      ```js
+      axlib.loadOnce({
+        urls: [
+          'https://ax.minicg.com/element/vue.min.js',
+          'https://ax.minicg.com/element/index.css',
+          'https://ax.minicg.com/element/index.js',
+        ],
+        lock: 'Element',
+        callback: ()=> { console.log(window.Vue) }
+      })
+      ```
+
+
     - ##### 获取一个或多个元件
       ```js
       // 原生节点（window.getEl === axlib.getEl）
