@@ -215,7 +215,7 @@ Axure的前端组件库,在RP9.x版本通过测试
           'https://ax.minicg.com/element/index.css',
           'https://ax.minicg.com/element/index.js',
         ],
-        lock: 'Element',
+        lock: 'Element', // 受变量名命名规则约束
         callback: ()=> { console.log(window.Vue) }
       })
       ```
