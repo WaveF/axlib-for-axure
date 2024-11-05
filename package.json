@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "WaveF",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "devDependencies": {
     "vite": "^4.4.11"
   }
