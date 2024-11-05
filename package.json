@@ -1,6 +1,6 @@
 {
   "name": "axlib",
-  "version": "1.0.0",
+  "version": "3.4.7",
   "description": "",
   "main":"lib/main.js",
   "files": [
