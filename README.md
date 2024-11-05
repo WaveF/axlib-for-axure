@@ -27,6 +27,36 @@ Axure的前端组件库,在RP9.x版本通过测试
       "><script src="https://ax.minicg.com/axlib-v3.min.js"></script><link href="
       ```
 
+    - 如果你想用`axlib`创建自己的组件，又是使用`npm`安装并本地编译，那你需要通过以下代码来导入：
+
+      ```js
+      // 安装（命令行）
+      npm i axlib
+
+      // 如果使用`jslib`来制作你的组件（命令行）
+      git clone https://gitee.com/wavef/jslib YOUR_LIBRARY_FOLDER
+      cd YOUR_LIBRARY_FOLDER
+      pnpm install
+      pnpm add axlib
+
+      /* 在JS中引入
+       * 注意：由于axlib依赖于Axure的jquery和$axure，所以目前暂时需要
+       *      用计时器来等待axure加载完毕后再执行你的代码
+       */
+      const checker = setInterval(()=>{
+        if (window.$ && window.$axure) {
+          clearInterval(checker);
+          main();
+        }
+      }, 200);
+
+      async function main() {
+        await import('axlib');
+        // 你的代码
+        console.log(axlib);
+      }
+      ```
+  
   #### 功能扩展
 
     - ##### 中继器 - Repeater
