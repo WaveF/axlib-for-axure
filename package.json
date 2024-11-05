@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main":"lib/main.js",
+  "files": [
+    "lib/main.js",
+    "dist/axlib-v3.min.js"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
