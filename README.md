@@ -232,13 +232,21 @@ Axure的前端组件库,在RP9.x版本通过测试
 
     - ##### 只加载一次资源，避免重复加载
       ```js
+      // v3.4.10 及其后版本会接受与yepnope.js一样的参数，另外还有额外的lock,interval参数
+      axlib.loadOnce({
+        load: axlib.libs.elementUI, // 会返回文件列表
+        lock: 'Element', // 受变量名命名规则约束(不能数字开头,特殊字符只接受$和_)
+        complete: ()=> { console.log(window.Vue) }
+      })
+
+      // v3.4.9 (代码会自动兼容，旧版代码无需修改)
       axlib.loadOnce({
         urls: [
           'https://ax.minicg.com/element/vue.min.js',
           'https://ax.minicg.com/element/index.css',
           'https://ax.minicg.com/element/index.js',
         ],
-        lock: 'Element', // 变量锁id,受变量名命名规则约束(不能数字开头,特殊字符只接受$和_)
+        lock: 'Element', // 受变量名命名规则约束(不能数字开头,特殊字符只接受$和_)
         callback: ()=> { console.log(window.Vue) }
       })
       ```
