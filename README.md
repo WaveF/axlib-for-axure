@@ -281,6 +281,17 @@ Axure的前端组件库,在RP9.x版本通过测试
       let { sym1, sym2, sym3 } = axlib.find('sym1', 'sym2', 'sym3');
       ```
 
+    - ##### 遍历多个元件
+      ```js
+      axlib.traverse({
+        name: "symbol",
+        handler: (el, index) => {
+          console.log(el, index);
+        },
+        strict: true // 模糊匹配元件名需设为false
+      });
+      ```
+
     - ##### 获取单个元件id
       ```js
       let id = $axure('@sym1').getId();
