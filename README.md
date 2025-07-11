@@ -285,7 +285,8 @@ Axure的前端组件库,在RP9.x版本通过测试
       ```js
       axlib.traverse({
         name: "symbol",
-        handler: (el, index) => {
+        init: ()=>console.log('doSomething'),
+        process: (el, index) => {
           console.log(el, index);
         },
         strict: true // 模糊匹配元件名需设为false
